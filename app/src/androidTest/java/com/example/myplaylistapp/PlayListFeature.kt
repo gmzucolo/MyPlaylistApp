@@ -43,12 +43,12 @@ class PlayListFeature {
 
     @Test
     fun displayListOfPlaylist() {
-        assertRecyclerViewItemCount(R.id.playlist_list, 10)
+        assertRecyclerViewItemCount(R.id.playlist, 10)
 
         onView(
             allOf(
                 withId(R.id.playlist_name),
-                isDescendantOfA(nthChildOf(withId(R.id.playlist_list), 0))
+                isDescendantOfA(nthChildOf(withId(R.id.playlist), 0))
             )
         )
             .check(matches(withText("Hard Rock Cafe")))
@@ -57,7 +57,7 @@ class PlayListFeature {
         onView(
             allOf(
                 withId(R.id.playlist_category),
-                isDescendantOfA(nthChildOf(withId(R.id.playlist_list), 0))
+                isDescendantOfA(nthChildOf(withId(R.id.playlist), 0))
             )
         )
             .check(matches(withText("rock")))
@@ -66,7 +66,7 @@ class PlayListFeature {
         onView(
             allOf(
                 withId(R.id.playlist_image),
-                isDescendantOfA(nthChildOf(withId(R.id.playlist_list), 0))
+                isDescendantOfA(nthChildOf(withId(R.id.playlist), 0))
             )
         )
             .check(matches(withResourceName("playlist_ic")))
