@@ -11,13 +11,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myplaylistapp.R
 import com.example.myplaylistapp.data.repository.PlaylistRepository
+import com.example.myplaylistapp.data.service.PlaylistService
 import com.example.myplaylistapp.presentation.viewmodel.PlaylistViewModel
 import com.example.myplaylistapp.presentation.viewmodel.PlaylistViewModelFactory
 import kotlinx.coroutines.launch
 
 class PlaylistFragment : Fragment() {
 
-    private val repository: PlaylistRepository = PlaylistRepository()
+    private val service: PlaylistService = PlaylistService()
+    private val repository: PlaylistRepository = PlaylistRepository(service)
     private val viewModel: PlaylistViewModel by lazy {
         val factory = PlaylistViewModelFactory(repository)
         ViewModelProvider(this, factory)[PlaylistViewModel::class.java]
