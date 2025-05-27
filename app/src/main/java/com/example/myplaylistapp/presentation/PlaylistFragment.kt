@@ -10,15 +10,24 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myplaylistapp.R
+import com.example.myplaylistapp.data.api.PlaylistAPI
+import com.example.myplaylistapp.data.model.Playlist
 import com.example.myplaylistapp.data.repository.PlaylistRepository
 import com.example.myplaylistapp.data.service.PlaylistService
 import com.example.myplaylistapp.presentation.viewmodel.PlaylistViewModel
 import com.example.myplaylistapp.presentation.viewmodel.PlaylistViewModelFactory
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
 class PlaylistFragment : Fragment() {
 
-    private val service: PlaylistService = PlaylistService()
+    private val api: PlaylistAPI = object : PlaylistAPI {
+        override suspend fun fetchAllPlaylists(): List<Playlist> {
+            return emptyList()
+        }
+    }
+
+    private val service: PlaylistService = PlaylistService(api)
     private val repository: PlaylistRepository = PlaylistRepository(service)
     private val viewModel: PlaylistViewModel by lazy {
         val factory = PlaylistViewModelFactory(repository)
