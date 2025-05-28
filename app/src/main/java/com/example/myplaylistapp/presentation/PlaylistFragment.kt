@@ -5,27 +5,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myplaylistapp.R
 import com.example.myplaylistapp.data.api.PlaylistAPI
-import com.example.myplaylistapp.data.model.Playlist
 import com.example.myplaylistapp.data.repository.PlaylistRepository
 import com.example.myplaylistapp.data.service.PlaylistService
 import com.example.myplaylistapp.presentation.viewmodel.PlaylistViewModel
 import com.example.myplaylistapp.presentation.viewmodel.PlaylistViewModelFactory
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class PlaylistFragment : Fragment() {
 
-    private val api: PlaylistAPI = object : PlaylistAPI {
-        override suspend fun fetchAllPlaylists(): List<Playlist> {
-            return emptyList()
-        }
-    }
+    private val retrofit = Retrofit.Builder()
+        .baseUrl("http://192.168.15.9:8080/")
+        .client(OkHttpClient())
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+
+    private val api: PlaylistAPI = retrofit.create(PlaylistAPI::class.java)
 
     private val service: PlaylistService = PlaylistService(api)
     private val repository: PlaylistRepository = PlaylistRepository(service)
@@ -39,19 +41,28 @@ class PlaylistFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_playlist, container, false)
 
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.playlists.value?.fold(
-                onSuccess = {
-                    with(view as RecyclerView) {
-                        layoutManager = LinearLayoutManager(context)
-                        adapter = MyPlaylistRecyclerViewAdapter(it)
-                    }
-                },
-                onFailure = {
-
+        viewModel.playlists.observe(this as LifecycleOwner) { playlist ->
+            if (playlist.getOrNull() != null) {
+                with(view as RecyclerView) {
+                    layoutManager = LinearLayoutManager(context)
+                    adapter = MyPlaylistRecyclerViewAdapter(playlist.getOrNull()!!)
                 }
-            )
+            } else {
+                // nothing
+            }
         }
+
+//            viewModel.playlists.value?.fold(
+//                onSuccess = {
+//                    with(view as RecyclerView) {
+//                        layoutManager = LinearLayoutManager(context)
+//                        adapter = MyPlaylistRecyclerViewAdapter(it)
+//                    }
+//                },
+//                onFailure = {
+//
+//                }
+//            )
         return view
     }
 
