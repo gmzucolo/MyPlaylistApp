@@ -12,15 +12,4 @@ class PlaylistViewModel(
     val playlists = liveData<Result<List<Playlist>>> {
         emitSource(repository.getPlaylists().asLiveData())
     }
-
-//    private val _playlists: MutableLiveData<Result<List<Playlist>>> = MutableLiveData()
-//    val playlists: LiveData<Result<List<Playlist>>> = _playlists
-//
-//    init {
-//        viewModelScope.launch {
-//            repository.getPlaylists().collect {
-//                _playlists.value = it
-//            }
-//        }
-//    }
 }

@@ -1,5 +1,6 @@
 package com.example.myplaylistapp.playlist
 
+import com.example.myplaylistapp.R
 import com.example.myplaylistapp.data.api.PlaylistAPI
 import com.example.myplaylistapp.data.model.Playlist
 import com.example.myplaylistapp.data.service.PlaylistService
@@ -17,7 +18,74 @@ class PlaylistServiceShould : BaseUnitTest() {
 
     private lateinit var service: PlaylistService
     private val api: PlaylistAPI = mock()
-    private val playlists = mock<List<Playlist>>()
+    private val playlists = listOf(
+        Playlist(
+            id = "1",
+            name = "Hard Rock Cafe",
+            category = "rock",
+            image = R.drawable.playlist_ic // Substitua pelo seu drawable resource
+        ),
+        Playlist(
+            id = "2",
+            name = "Chilled House",
+            category = "house",
+            image = R.drawable.playlist_ic // Substitua pelo seu drawable resource
+        ),
+        Playlist(
+            id = "3",
+            name = "US TOP 40 HITS",
+            category = "mixed",
+            image = R.drawable.playlist_ic // Substitua pelo seu drawable resource
+        ),
+        Playlist(
+            id = "4",
+            name = "90's Rock",
+            category = "rock",
+            image = R.drawable.playlist_ic // Substitua pelo seu drawable resource
+        ),
+        Playlist(
+            id = "5",
+            name = "Purple Jazz",
+            category = "jazz",
+            image = R.drawable.playlist_ic // Substitua pelo seu drawable resource
+
+        ),
+        Playlist(
+            id = "6",
+            name = "90's flashback",
+            category = "pop",
+            image = R.drawable.playlist_ic // Substitua pelo seu drawable resource
+
+        ),
+        Playlist(
+            id = "7",
+            name = "Machine Funk",
+            category = "electro",
+            image = R.drawable.playlist_ic // Substitua pelo seu drawable resource
+
+        ),
+        Playlist(
+            id = "8",
+            name = "Let's Groove",
+            category = "mixed",
+            image = R.drawable.playlist_ic // Substitua pelo seu drawable resource
+
+        ),
+        Playlist(
+            id = "9",
+            name = "Feel The Beat",
+            category = "electro",
+            image = R.drawable.playlist_ic // Substitua pelo seu drawable resource
+
+        ),
+        Playlist(
+            id = "10",
+            name = "Best Songs 2020",
+            category = "mixed",
+            image = R.drawable.playlist_ic // Substitua pelo seu drawable resource
+
+        )
+    )
 
     @Test
     fun fetchPlaylistsFromAPI() = runTest {

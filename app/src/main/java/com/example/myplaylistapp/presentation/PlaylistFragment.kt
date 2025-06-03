@@ -6,28 +6,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myplaylistapp.R
 import com.example.myplaylistapp.presentation.viewmodel.PlaylistViewModel
-import com.example.myplaylistapp.presentation.viewmodel.PlaylistViewModelFactory
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+import androidx.lifecycle.ViewModelProvider
+import com.example.myplaylistapp.MyApplication
 
-@AndroidEntryPoint
 class PlaylistFragment : Fragment() {
 
-    @Inject
-    lateinit var viewModelFactory: PlaylistViewModelFactory
-    lateinit var viewModel: PlaylistViewModel
+    private val viewModel: PlaylistViewModel by lazy {
+        ViewModelProvider(this, MyApplication().factory).get(PlaylistViewModel::class.java)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_playlist, container, false)
-
-        viewModel = ViewModelProvider(this, viewModelFactory)[PlaylistViewModel::class.java]
 
         viewModel.playlists.observe(this as LifecycleOwner) { playlist ->
             if (playlist.getOrNull() != null) {
