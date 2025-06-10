@@ -3,7 +3,6 @@ package com.example.myplaylistapp.presentation
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.myplaylistapp.R
 import com.example.myplaylistapp.data.model.Playlist
 import com.example.myplaylistapp.databinding.PlaylistItemBinding
 
@@ -28,7 +27,7 @@ class MyPlaylistRecyclerViewAdapter(
 
         holder.playlistName.text = item.name
         holder.playlistCategory.text = item.category
-        holder.playlistImage.setImageResource(R.drawable.playlist_ic)
+        holder.playlistImage.setImageResource(item.image)
     }
 
     override fun getItemCount(): Int = values.size

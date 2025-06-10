@@ -4,6 +4,7 @@ import com.example.myplaylistapp.data.model.Playlist
 import com.example.myplaylistapp.data.repository.PlaylistRepository
 import com.example.myplaylistapp.presentation.viewmodel.PlaylistViewModel
 import com.example.myplaylistapp.utils.BaseUnitTest
+import com.example.myplaylistapp.utils.captureValues
 import com.example.myplaylistapp.utils.getValueForTest
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.times
@@ -68,5 +69,60 @@ class PlaylistViewModelShould : BaseUnitTest() {
     fun emitsPlaylistsFromRepository() = runTest {
         // Assert
         assertEquals(expected, viewModel.playlists.getValueForTest())
+    }
+
+    @Test
+    fun showSpinnerWhileLoading() = runTest {
+        // Arrange
+        val viewModel = mockSuccessfullyCase()
+
+        // Act & Assert
+        viewModel.loader.captureValues {
+            viewModel.playlists.getValueForTest()
+            assertEquals(true, values[0])
+        }
+    }
+
+    @Test
+    fun closeLoaderAfterPlaylistsLoad() = runTest {
+        // Arrange
+        val viewModel = mockSuccessfullyCase()
+
+        // Act & Assert
+        viewModel.loader.captureValues {
+            viewModel.playlists.getValueForTest()
+            assertEquals(false, values.last())
+        }
+    }
+
+    @Test
+    fun closeLoaderAfterError() = runTest {
+        // Arrange
+        val viewModel = mockErrorCase()
+
+        // Act & Assert
+        viewModel.loader.captureValues {
+            viewModel.playlists.getValueForTest()
+
+            assertEquals(false, values.last())
+        }
+    }
+
+    private fun mockSuccessfullyCase(): PlaylistViewModel {
+        runTest {
+            whenever(repository.getPlaylists()).thenReturn(
+                flow { emit(expected) }
+            )
+        }
+        return PlaylistViewModel(repository)
+    }
+
+    private fun mockErrorCase(): PlaylistViewModel {
+        runTest {
+            whenever(repository.getPlaylists()).thenReturn(
+                flow { emit(Result.failure(exception)) }
+            )
+        }
+        return PlaylistViewModel(repository)
     }
 }

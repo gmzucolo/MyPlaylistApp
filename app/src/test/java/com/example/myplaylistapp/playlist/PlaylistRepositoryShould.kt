@@ -1,6 +1,8 @@
 package com.example.myplaylistapp.playlist
 
+import com.example.myplaylistapp.data.mapper.PlaylistMapper
 import com.example.myplaylistapp.data.model.Playlist
+import com.example.myplaylistapp.data.model.PlaylistResponse
 import com.example.myplaylistapp.data.repository.PlaylistRepository
 import com.example.myplaylistapp.data.service.PlaylistService
 import com.example.myplaylistapp.utils.BaseUnitTest
@@ -18,7 +20,9 @@ import org.junit.Test
 class PlaylistRepositoryShould : BaseUnitTest() {
 
     private val service: PlaylistService = mock()
+    private val mapper: PlaylistMapper = mock()
     private val playlists = mock<List<Playlist>>()
+    private val playlistsResponse = mock<List<PlaylistResponse>>()
     private val expected = Result.success(playlists)
     private val exception = RuntimeException("Something went wrong")
 
@@ -27,7 +31,7 @@ class PlaylistRepositoryShould : BaseUnitTest() {
         runTest {
             whenever(service.fetchPlaylists()).thenReturn(
                 flow {
-                    emit(Result.success(playlists))
+                    emit(Result.success(playlistsResponse))
                 }
             )
         }
@@ -36,7 +40,7 @@ class PlaylistRepositoryShould : BaseUnitTest() {
     @Test
     fun getPlaylistsFromService() = runTest {
         // Arrange
-        val repository = PlaylistRepository(service)
+        val repository = mockSuccessCase()
 
         // Act
         repository.getPlaylists()
@@ -48,7 +52,7 @@ class PlaylistRepositoryShould : BaseUnitTest() {
     @Test
     fun emitsPlaylistsFromService() = runTest {
         // Arrange & Act
-        val repository = PlaylistRepository(service)
+        val repository = mockSuccessCase()
 
         // Assert
         assertEquals(playlists, repository.getPlaylists().first().getOrNull())
@@ -68,5 +72,30 @@ class PlaylistRepositoryShould : BaseUnitTest() {
 
         // Assert
         assertEquals(exception, repository.getPlaylists().first().exceptionOrNull())
+    }
+
+    @Test
+    fun delegateBusinessLogicToMapper() = runTest {
+        // Arrange
+        val repository = mockSuccessCase()
+
+        // Act
+        repository.getPlaylists().first()
+
+        // Assert
+        verify(mapper, times(1)).invoke(playlistsResponse)
+    }
+
+    private suspend fun mockSuccessCase(): PlaylistRepository {
+        whenever(service.fetchPlaylists()).thenReturn(
+            flow {
+                emit(Result.success(playlistsResponse))
+            }
+
+        )
+
+        whenever(mapper.invoke(playlistsResponse)).thenReturn(playlists)
+
+        return PlaylistRepository(service, mapper)
     }
 }

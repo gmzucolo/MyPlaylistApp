@@ -14,6 +14,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.adevinta.android.barista.assertion.BaristaRecyclerViewAssertions.assertRecyclerViewItemCount
 import com.adevinta.android.barista.assertion.BaristaVisibilityAssertions.assertDisplayed
+import com.adevinta.android.barista.assertion.BaristaVisibilityAssertions.assertNotDisplayed
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers.allOf
@@ -63,14 +64,25 @@ class PlayListFeature {
             .check(matches(withText("rock")))
             .check(matches(isDisplayed()))
 
-//        onView(
-//            allOf(
-//                withId(R.id.playlist_image),
-//                isDescendantOfA(nthChildOf(withId(R.id.playlist), 0))
-//            )
-//        )
-////            .check(matches(withResourceName("playlist_ic")))
-////            .check(matches(isDisplayed()))
+        onView(
+            allOf(
+                withId(R.id.playlist_image),
+                isDescendantOfA(nthChildOf(withId(R.id.playlist), 0))
+            )
+        )
+            .check(matches(withResourceName("playlist_image")))
+            .check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun displaysLoaderWhileFetchingThePlaylists() {
+        assertDisplayed(R.id.loader)
+    }
+
+    @Test
+    fun hidesLoader() {
+        Thread.sleep(3000)
+        assertNotDisplayed(R.id.loader)
     }
 
     private fun nthChildOf(parentMatcher: Matcher<View>, childPosition: Int): Matcher<View> {
